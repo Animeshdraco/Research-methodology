@@ -1,0 +1,7 @@
+target,model,MAE,RMSE,n_test,split
+TDS,Persistence,9.338073333333332,20.389124298507774,150,chronological 70/30 per device
+TDS,Linear regression,79.01978406612864,147.3112819608486,150,chronological 70/30 per device
+TDS,Random forest,74.05125739540173,143.93992017811235,150,chronological 70/30 per device
+Turbidity,Persistence,0.08008627450980392,0.24711109512390034,153,chronological 70/30 per device
+Turbidity,Linear regression,0.27771929440208526,0.5158488515431464,153,chronological 70/30 per device
+Turbidity,Random forest,0.0932066127169554,0.3315954256315251,153,chronological 70/30 per device

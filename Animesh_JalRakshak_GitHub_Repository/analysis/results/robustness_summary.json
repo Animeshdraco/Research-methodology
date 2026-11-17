@@ -1,0 +1,11 @@
+{
+  "dataset": "seed-42 synthetic readings",
+  "scenario_count": 10,
+  "scenario_definitions": {
+    "noise": "Gaussian noise added independently to each sensor channel; magnitude is a fraction of that channel's dataset standard deviation",
+    "missing": "Random sensor-channel rows set missing independently per device; models forward-fill predictors only and omit missing targets",
+    "drift": "Linear drift added to purified TDS from zero to magnitude times the device's base purified-TDS standard deviation"
+  },
+  "results_file": "analysis/results/robustness_sweep.csv",
+  "interpretation": "Sensitivity results are simulator stress tests only; no external or field validation is implied."
+}

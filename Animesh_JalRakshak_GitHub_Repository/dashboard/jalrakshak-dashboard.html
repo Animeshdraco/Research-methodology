@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JalRakshak – Individual Dashboard | Animesh Giri</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#eef3f5;--card:#fff;--ink:#12303a;--mute:#5d7480;--line:#d6e1e6;--brand:#0f7f86;--brand-soft:#dcf0f1;--ok:#237a4b;--ok-bg:#dff3e7;--warn:#a96a00;--warn-bg:#fbefd2;--bad:#b3392a;--bad-bg:#f8dfda;--raw:#b07a3a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1d23;--card:#14292f;--ink:#e3eef1;--mute:#93aab3;--line:#264048;--brand:#4fc3c9;--brand-soft:#1b3d43;--ok:#6ed19a;--ok-bg:#183a29;--warn:#f0b34a;--warn-bg:#3e3216;--bad:#f08a7a;--bad-bg:#44201b;--raw:#e0a35f;color-scheme:dark}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+aside{background:var(--card);border-right:1px solid var(--line);padding:18px 12px;position:sticky;top:0;height:100vh}
+.logo{font-weight:600;font-size:18px;padding:4px 10px 18px;color:var(--brand)}
+.logo small{display:block;color:var(--mute);font-weight:400;font-size:11px;line-height:1.45;margin-top:3px}
+nav button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--ink);padding:10px 12px;border-radius:8px;font:inherit;cursor:pointer}
+nav button:hover{background:var(--brand-soft)}
+nav button.on{background:var(--brand);color:#fff}
+main{padding:20px;max-width:1100px;width:100%}
+.top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
+h1{font-size:22px;margin:0;font-weight:600}
+h2{font-size:16px;margin:0 0 10px;font-weight:600}
+select,.btn{font:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
+.btn:hover{border-color:var(--brand)}
+.btn.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.sm{padding:4px 10px;font-size:13px}
+.pill{display:inline-block;font-size:12px;padding:2px 9px;border-radius:99px;font-weight:500}
+.sim{background:var(--warn-bg);color:var(--warn)}
+.ok{background:var(--ok-bg);color:var(--ok)}.warn{background:var(--warn-bg);color:var(--warn)}.bad{background:var(--bad-bg);color:var(--bad)}.info{background:var(--brand-soft);color:var(--brand)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+.grid{display:grid;gap:14px}
+.g4{grid-template-columns:repeat(4,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
+.grid>.card{margin:0}
+.big{font-size:28px;font-weight:600;line-height:1.1}
+.mute{color:var(--mute);font-size:13px}
+.note{border-left:4px solid var(--warn);background:var(--warn-bg);color:var(--ink);padding:10px 14px;border-radius:6px;font-size:13px;margin-bottom:14px}
+.status{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.dot{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font-size:24px;flex:none}
+.chartbox{position:relative;height:240px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:500}
+.tblwrap{overflow-x:auto}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--brand)}
+.stage{display:flex;gap:12px;align-items:center;margin-bottom:12px}.stage>div:first-child{width:150px;flex:none}
+.alert{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;border-bottom:1px solid var(--line);padding:12px 0}
+.alert:last-child{border:0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.empty{text-align:center;color:var(--mute);padding:26px 0}
+.ring{width:130px;height:130px;border-radius:50%;display:grid;place-items:center;flex:none}
+.ring div{width:96px;height:96px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:26px;font-weight:600}
+.task{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
+@media(max-width:820px){
+.layout{display:block}
+aside{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;z-index:20;border-right:0;border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom,0px))}
+.logo{display:none}
+nav{display:flex;overflow-x:auto}
+nav button{text-align:center;padding:8px 10px;font-size:12px;white-space:nowrap}
+main{padding:14px 12px 90px}
+.g4,.g3{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}
+.stage>div:first-child{width:105px}
+}
+@media(max-width:420px){.g4{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside><div class="logo">JalRakshak<small>Individual workspace<br>Animesh Giri<br>SAP ID: 590012563</small></div><nav id="nav"></nav></aside>
+<main>
+<div class="top"><div><h1 id="title"></h1><div class="mute">Animesh Giri · B.Tech CSE (CCVT), Third Year</div></div>
+<div class="row"><span class="pill sim" id="source-status">Embedded simulation · API not connected</span><select id="devsel" aria-label="Select device"></select></div></div>
+<div id="app"></div>
+</main></div>
+<script>
+// ---------- simulated data (seeded, so it is the same every load) ----------
+function rng(s){return function(){s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const N=168, NOW=new Date(); NOW.setMinutes(0,0,0);
+const DEVICES=[
+ {id:"JW-01",name:"Jharia Block Unit",place:"Dhanbad, Jharkhand",ph:7.4,turb:8,tds:780,temp:25,eff:.9,spike:true,fw:"v0.3 (sim)",stages:[72,55,81,64]},
+ {id:"JW-02",name:"Noamundi Mine Village Unit",place:"West Singhbhum, Jharkhand",ph:7.9,turb:4,tds:1350,temp:27,eff:.92,fw:"v0.3 (sim)",stages:[60,68,74,90]},
+ {id:"JW-03",name:"Patratu Community Unit",place:"Ramgarh, Jharkhand",ph:7.1,turb:3,tds:900,temp:26,eff:.9,degrade:true,fw:"v0.2 (sim)",stages:[85,77,22,58]}
+];
+const STAGES=["Sediment filter","Activated carbon","UF / RO membrane","UV disinfection"];
+function gen(d,k){const r=rng(11+k*97),n=()=>r()*2-1,rows=[];
+ for(let i=0;i<N;i++){const t=new Date(NOW.getTime()-(N-1-i)*36e5),h=t.getHours();
+  const sp=d.spike&&i>=N-30&&i<N-24?(i-(N-31))*11:0;
+  let eff=d.eff; if(d.degrade&&i>N-45)eff-=(i-(N-45))*.0115;
+  const raw={ph:d.ph+.15*n(),turb:Math.max(.5,d.turb*(1+.3*n())+sp),tds:d.tds*(1+.06*n()),temp:d.temp+3*Math.sin(2*Math.PI*(h-15)/24)+.4*n()};
+  const pur={ph:raw.ph-.1+.05*n(),turb:.15+raw.turb*.04+.05*Math.abs(n()),tds:raw.tds*(1-eff)+8*n(),temp:raw.temp+.3};
+  rows.push({t,raw,pur});}
+ return rows;}
+const DATA=DEVICES.map(gen);
+const LIM={ph:[6.5,8.5],turb:[1,5],tds:[500,2000]};
+const P={ph:{l:"pH",u:"",d:2},turb:{l:"Turbidity",u:"NTU",d:1},tds:{l:"TDS",u:"mg/L",d:0},temp:{l:"Temperature",u:"°C",d:1}};
+function level(k,v){if(k==="ph")return v>=6.5&&v<=8.5?0:2;
+ if(k==="temp")return 0; const[a,b]=LIM[k];return v<=a?0:(v<=b?1:2)}
+const LV=[["Within limits","ok"],["Caution","warn"],["Out of range","bad"]];
+const fmt=(k,v)=>v.toFixed(P[k].d);
+const dt=t=>t.toLocaleString("en-IN",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
+// ---------- alerts: generated by threshold rules on purified water ----------
+let ALERTS=[];
+DEVICES.forEach((d,di)=>{["turb","tds","ph"].forEach(k=>{let cur=null;
+ DATA[di].forEach(row=>{const v=row.pur[k],l=level(k,v);
+  if(l>0){if(!cur)cur={dev:di,k,start:row.t,peak:v,lv:l};else{cur.peak=k==="ph"&&Math.abs(v-7.5)<Math.abs(cur.peak-7.5)?cur.peak:Math.max(cur.peak,v);cur.lv=Math.max(cur.lv,l);}cur.end=row.t}
+  else if(cur){push(cur);cur=null}});
+ if(cur)push(cur);});});
+function push(c){if(c.k!=="ph"&&false)return;ALERTS.push({id:ALERTS.length+1,dev:c.dev,k:c.k,time:c.end,start:c.start,peak:c.peak,sev:c.lv===2?"Critical":"Warning",status:"Open"})}
+ALERTS.sort((a,b)=>b.time-a.time);
+function why(a){const p=P[a.k];return `Purified ${p.l} reached ${fmt(a.k,a.peak)} ${p.u}, outside the configured limit. Check the filter stages first; a sensor fault is also possible. Confirm with a lab test before drawing conclusions.`}
+// ---------- progress tracker (percent is computed from this list) ----------
+const TASKS=[
+["Dashboard","Six responsive views, chart controls and readable empty/error states","done"],
+["Dashboard","Raw-versus-treated parameter trends and device selection","done"],
+["Alerts","IS 10500-aligned pH/turbidity/TDS rule engine and status actions","done"],
+["Data","Seeded 504-row dataset with labelled simulator events","done"],
+["ML","Chronological forecasting comparison against persistence","done"],
+["ML","Training-only Isolation Forest threshold and held-out metrics","done"],
+["Backend","FastAPI reading ingestion and dashboard endpoints","done"],
+["Backend","SQLite persistence, duplicate prevention and alert history","done"],
+["Security","Per-device API keys, device identity checks and range validation","done"],
+["Quality","Automated API, input validation and experiment tests","done"],
+["Quality","Noise, missing-reading and drift sensitivity sweep","done"],
+["Documentation","Reproducibility, data dictionary, hardware plan and submission files","done"]];
+const DEPLOYMENT_TASKS=[
+["Hardware build and sensor calibration","Requires physical ESP32, sensor modules and calibration standards"],
+["Water-treatment and laboratory validation","Requires source/treated samples and an accredited laboratory"],
+["Field deployment and long-duration reliability test","Requires site permission, safety review and field monitoring"]];
+const PCT=100;
+// ---------- UI ----------
+const S={dev:2,view:"dash",param:"tds",range:48,filter:"All"};
+const VIEWS={dash:"Dashboard",ana:"Analytics",dev:"Devices",alerts:"Alerts",ml:"Forecast & anomalies",prog:"Project progress"};
+const $=id=>document.getElementById(id); let charts=[];
+$("nav").innerHTML=Object.entries(VIEWS).map(([k,v])=>`<button data-v="${k}">${v}</button>`).join("");
+$("devsel").innerHTML=DEVICES.map((d,i)=>`<option value="${i}">${d.id} · ${d.name}</option>`).join("");
+$("nav").onclick=e=>{const v=e.target.dataset.v;if(v){S.view=v;render()}};
+$("devsel").onchange=e=>{S.dev=+e.target.value;render()};
+function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
+function drawFallbackChart(canvas,k,rows,showLimit){
+ const rect=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+ const width=Math.max(320,Math.floor(rect.width)),height=Math.max(190,Math.floor(rect.height));
+ canvas.width=width*dpr;canvas.height=height*dpr;canvas.style.width="100%";canvas.style.height="100%";
+ const ctx=canvas.getContext("2d");ctx.scale(dpr,dpr);
+ const cssv=n=>css(n)||"#647b84",raw=rows.map(r=>r.raw[k]),pure=rows.map(r=>r.pur[k]);
+ const lim=k==="ph"?null:LIM[k],all=raw.concat(pure,showLimit&&lim?[lim[0]]:[]);
+ let min=Math.min(...all),max=Math.max(...all),pad=Math.max((max-min)*.12,.05);min=Math.max(0,min-pad);max+=pad;
+ const left=52,right=12,top=12,bottom=28,plotW=width-left-right,plotH=height-top-bottom;
+ const x=i=>left+i*plotW/Math.max(1,rows.length-1),y=v=>top+(max-v)/(max-min||1)*plotH;
+ ctx.font="11px system-ui";ctx.fillStyle=cssv("--mute");ctx.strokeStyle=cssv("--line");ctx.lineWidth=1;
+ for(let i=0;i<5;i++){const yy=top+i*plotH/4,val=max-i*(max-min)/4;ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(width-right,yy);ctx.stroke();ctx.fillText(k==="tds"?val.toFixed(0):val.toFixed(1),4,yy+4)}
+ const line=(values,color,dash=[])=>{ctx.beginPath();values.forEach((v,i)=>{const xx=x(i),yy=y(v);if(i===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy)});ctx.strokeStyle=color;ctx.lineWidth=2;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([])};
+ line(raw,cssv("--raw"));line(pure,cssv("--brand"));
+ if(showLimit&&lim){ctx.beginPath();ctx.moveTo(left,y(lim[0]));ctx.lineTo(width-right,y(lim[0]));ctx.strokeStyle=cssv("--bad");ctx.lineWidth=1.5;ctx.setLineDash([5,4]);ctx.stroke();ctx.setLineDash([])}
+ ctx.fillStyle=cssv("--mute");ctx.fillText("Earlier",left,height-8);ctx.fillText("Latest",width-right-38,height-8);
+ // Inline legend avoids depending on a third-party chart CDN.
+ const ly=height-7;ctx.font="11px system-ui";ctx.fillStyle=cssv("--raw");ctx.fillRect(width-220,ly-8,14,3);ctx.fillStyle=cssv("--mute");ctx.fillText("Raw",width-202,ly-4);
+ ctx.fillStyle=cssv("--brand");ctx.fillRect(width-155,ly-8,14,3);ctx.fillStyle=cssv("--mute");ctx.fillText("Purified",width-137,ly-4);
+}
+function chart(id,k,range,showLimit){
+ const rows=DATA[S.dev].slice(-range),el=$(id);if(!el)return;
+ if(typeof Chart==="undefined"){drawFallbackChart(el,k,rows,showLimit);return}
+ const ds=[{label:"Raw water",data:rows.map(r=>r.raw[k]),borderColor:css("--raw"),pointRadius:0,borderWidth:2,tension:.3},
+  {label:"Purified water",data:rows.map(r=>r.pur[k]),borderColor:css("--brand"),pointRadius:0,borderWidth:2,tension:.3}];
+ const lim=k==="ph"?null:LIM[k];
+ if(showLimit&&lim)ds.push({label:"Limit ("+lim[0]+")",data:rows.map(()=>lim[0]),borderColor:css("--bad"),borderDash:[6,4],pointRadius:0,borderWidth:1.5});
+ const c=new Chart(el,{type:"line",data:{labels:rows.map(r=>dt(r.t)),datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
+  plugins:{legend:{labels:{color:css("--ink"),boxWidth:14}}},scales:{x:{ticks:{color:css("--mute"),maxTicksLimit:6,maxRotation:0},grid:{display:false}},y:{ticks:{color:css("--mute")},grid:{color:css("--line")},title:{display:true,text:P[k].u,color:css("--mute")}}}}});
+ charts.push(c)}
+function render(){
+ charts.forEach(c=>c.destroy());charts=[];
+ $("title").textContent=VIEWS[S.view];$("devsel").value=S.dev;
+ document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.view));
+ const f={dash,ana,dev:devs,alerts,ml,prog}[S.view];$("app").innerHTML=f();
+ if(S.view==="dash"){chart("c1","tds",48,true);chart("c2","turb",48,true)}
+ if(S.view==="ana")chart("c3",S.param,S.range,true);
+ window.scrollTo(0,0)}
+function dash(){const d=DEVICES[S.dev],rows=DATA[S.dev],last=rows[rows.length-1];
+ const lv=Math.max(level("ph",last.pur.ph),level("turb",last.pur.turb),level("tds",last.pur.tds));
+ const w=rows.slice(-6),avg=(f)=>w.reduce((s,r)=>s+f(r),0)/w.length;
+ const eT=100*(1-avg(r=>r.pur.tds)/avg(r=>r.raw.tds)),eU=100*(1-avg(r=>r.pur.turb)/avg(r=>r.raw.turb));
+ const names=["Monitored readings are within the configured preferred limits; this is not a safety certification.","A reading is outside a preferred limit. Inspect the filter stages and confirm with a laboratory.","A reading is beyond the configured permissible limit for turbidity or TDS. Do not drink until it is tested."];
+ const icon=["✓","!","✕"][lv],cls=LV[lv][1];
+ const al=ALERTS.filter(a=>a.dev===S.dev).slice(0,3);
+ return `<div class="note"><b>Simulated readings.</b> These values are from the seeded simulator and local API, not live probes. pH, turbidity, TDS and temperature readings do not detect pathogens or quantify mine-related metals. This display is not a potability certificate; use laboratory analysis.</div>
+ <div class="card status"><div class="dot ${cls}">${icon}</div><div style="flex:1;min-width:200px"><div class="big">${LV[lv][0]}</div><div class="mute">${d.name} · ${d.place}<br>${names[lv]}</div></div>
+ <div><div class="mute">Simulator-indicated reduction (last 6 h)</div><div class="row"><span class="pill info">TDS −${eT.toFixed(0)}%</span><span class="pill info">Turbidity −${eU.toFixed(0)}%</span></div><div class="mute">Updated ${dt(last.t)}</div></div></div>
+ <div class="grid g4" style="margin-bottom:14px">${Object.keys(P).map(k=>{const l=level(k,last.pur[k]);return `<div class="card"><div class="mute">${P[k].l} (purified)</div><div class="big">${fmt(k,last.pur[k])} <span class="mute">${P[k].u}</span></div><div class="mute">Raw: ${fmt(k,last.raw[k])} ${P[k].u}</div><span class="pill ${LV[l][1]}">${k==="temp"?"Info only":LV[l][0]}</span></div>`}).join("")}</div>
+ <div class="grid g2" style="margin-bottom:14px"><div class="card"><h2>TDS, last 48 hours</h2><div class="chartbox"><canvas id="c1"></canvas></div></div><div class="card"><h2>Turbidity, last 48 hours</h2><div class="chartbox"><canvas id="c2"></canvas></div></div></div>
+ <div class="grid g2"><div class="card"><h2>Purification stages</h2>${stages(d)}</div>
+ <div class="card"><h2>Latest alerts</h2>${al.length?al.map(alertRow).join(""):'<div class="empty">No alerts for this device.</div>'}</div></div>`}
+function stages(d){return STAGES.map((s,i)=>{const v=d.stages[i];return `<div class="stage"><div>${s}</div><div style="flex:1"><div class="bar"><i style="width:${v}%;background:${v<30?css("--bad"):v<50?css("--warn"):css("--brand")}"></i></div></div><div class="mute" style="width:44px;text-align:right">${v}%</div></div>`}).join("")+'<div class="mute">Remaining life is a simulated estimate, not an observed filter measurement. Below 30% the stage should be inspected.</div>'}
+function ana(){const rs=[24,48,168],ks=Object.keys(P);
+ const vals=DATA[S.dev].slice(-S.range).map(r=>r.pur[S.param]),mn=Math.min(...vals),mx=Math.max(...vals),av=vals.reduce((a,b)=>a+b,0)/vals.length;
+ return `<div class="card"><div class="row" style="margin-bottom:10px">${ks.map(k=>`<button class="btn sm ${S.param===k?"on":""}" onclick="S.param='${k}';render()">${P[k].l}</button>`).join("")}<span style="flex:1"></span>${rs.map(r=>`<button class="btn sm ${S.range===r?"on":""}" onclick="S.range=${r};render()">${r===168?"7 days":r+" h"}</button>`).join("")}</div>
+ <div class="chartbox" style="height:300px"><canvas id="c3"></canvas></div></div>
+ <div class="card"><h2>Purified ${P[S.param].l}: summary for selected range</h2><div class="grid g3"><div><div class="mute">Minimum</div><div class="big">${fmt(S.param,mn)}</div></div><div><div class="mute">Average</div><div class="big">${fmt(S.param,av)}</div></div><div><div class="mute">Maximum</div><div class="big">${fmt(S.param,mx)}</div></div></div>
+ <p class="mute">Dashed lines show preferred limits for turbidity (1 NTU) and TDS (500 mg/L). pH outside 6.5–8.5 is flagged for confirmation because IS 10500 specifies no pH relaxation. The prototype settings are configurable; confirm the applicable amended standard before deployment.</p></div>`}
+function devs(){const rows=DATA[S.dev].slice(-12).reverse();
+ return `<div class="grid g3" style="margin-bottom:14px">${DEVICES.map((d,i)=>`<div class="card" style="${i===S.dev?"border-color:"+css("--brand"):""}"><h2>${d.id} · ${d.name}</h2><div class="mute">${d.place}<br>Firmware ${d.fw}<br>Data source: simulated<br>Last seen: ${dt(NOW)}</div><div class="row" style="margin-top:10px"><span class="pill ok">Online (sim)</span><button class="btn sm" onclick="S.dev=${i};render()">${i===S.dev?"Selected":"View"}</button></div></div>`).join("")}</div>
+ <div class="card"><h2>Recent readings: ${DEVICES[S.dev].id}</h2><div class="tblwrap"><table><tr><th>Time</th><th>pH (raw / pure)</th><th>Turbidity NTU</th><th>TDS mg/L</th><th>Temp °C</th></tr>
+ ${rows.map(r=>`<tr><td>${dt(r.t)}</td><td>${r.raw.ph.toFixed(2)} / ${r.pur.ph.toFixed(2)}</td><td>${r.raw.turb.toFixed(1)} / ${r.pur.turb.toFixed(1)}</td><td>${r.raw.tds.toFixed(0)} / ${r.pur.tds.toFixed(0)}</td><td>${r.pur.temp.toFixed(1)}</td></tr>`).join("")}</table></div></div>`}
+function alertRow(a){const sc=a.sev==="Critical"?"bad":"warn",st=a.status==="Resolved"?"ok":a.status==="Acknowledged"?"info":"warn";
+ return `<div class="alert"><div style="flex:1;min-width:220px"><div class="row"><span class="pill ${sc}">${a.sev}</span><b>${P[a.k].l} · ${DEVICES[a.dev].id}</b><span class="pill ${st}">${a.status}</span></div><div class="mute">${dt(a.start)} to ${dt(a.time)}</div><div style="font-size:14px;margin-top:4px">${why(a)}</div></div>
+ <div class="row">${a.status==="Open"?`<button class="btn sm" onclick="setA(${a.id},'Acknowledged')">Acknowledge</button>`:""}${a.status!=="Resolved"?`<button class="btn sm" onclick="setA(${a.id},'Resolved')">Resolve</button>`:""}</div></div>`}
+async function setA(id,s){
+ const alert=ALERTS.find(a=>a.id===id); if(!alert)return;
+ if(window.JALRAKSHAK_API_CONNECTED){
+  try{const r=await fetch(`/api/v1/alerts/${id}`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({status:s})});if(!r.ok)throw new Error(`HTTP ${r.status}`)}
+  catch(e){alert("Could not save the alert status to the API. The page will retain its local change.")}
+ }
+ alert.status=s;render();
+}
+function alerts(){const fs=["All","Open","Acknowledged","Resolved"],list=ALERTS.filter(a=>S.filter==="All"||a.status===S.filter);
+ return `<div class="card"><div class="row" style="margin-bottom:8px">${fs.map(f=>`<button class="btn sm ${S.filter===f?"on":""}" onclick="S.filter='${f}';render()">${f}</button>`).join("")}</div>
+ ${list.length?list.map(alertRow).join(""):'<div class="empty">No alerts match this filter.</div>'}
+ <div class="mute">Alerts are generated from the stored simulated stream. When this page is served by the local API, acknowledgement and resolution changes are saved in SQLite. This status is not a water-safety certificate.</div></div>`}
+function ml(){return `<div class="note"><b>Evaluation scope.</b> These are measured software-experiment results from the seeded synthetic dataset (504 rows; 3 simulated units; 168 hours each). They are not field accuracy, sensor validation or evidence that water is safe.</div>
+ <div class="grid g2"><div class="card"><h2>One-hour-ahead forecasting</h2><p class="mute">Chronological split: first 70% of each unit for training, final 30% for testing (150 TDS targets; 153 turbidity targets after excluding missing TDS observations). Lower error is better.</p>
+ <div class="tblwrap"><table><tr><th>Target / model</th><th>MAE</th><th>RMSE</th></tr>
+ <tr><td>TDS · Persistence</td><td>9.34</td><td>20.39</td></tr><tr><td>TDS · Linear regression</td><td>79.02</td><td>147.31</td></tr><tr><td>TDS · Random forest</td><td>74.05</td><td>143.94</td></tr>
+ <tr><td>Turbidity · Persistence</td><td>0.080</td><td>0.247</td></tr><tr><td>Turbidity · Linear regression</td><td>0.278</td><td>0.516</td></tr><tr><td>Turbidity · Random forest</td><td>0.093</td><td>0.332</td></tr></table></div>
+ <div class="note" style="margin-top:12px">Persistence outperformed both regression models on this simulator. The more complex models are not presented as an improvement.</div></div>
+ <div class="card"><h2>Isolation Forest anomaly detection</h2><div class="grid g3"><div><div class="mute">Precision</div><div class="big">0.796</div></div><div><div class="mute">Recall</div><div class="big">0.582</div></div><div><div class="mute">F1-score</div><div class="big">0.672</div></div></div>
+ <p class="mute">Held-out set: 153 rows, including 67 injected anomalous rows. Threshold: 5th percentile of training scores, set without using test labels.</p>
+ <div class="note" style="margin:0">An anomaly is a prompt to investigate. It is not proof of contamination; sensor faults and synthetic event patterns may be easier to recognise than real-world incidents.</div></div></div>
+ <div class="card"><h2>What the results mean</h2><p>For the generated series, the last observed value was a stronger one-hour predictor than the regression models. Isolation Forest identified some, but not all, injected events. The findings support a baseline-first approach and show why the system still needs sensor calibration, field data and laboratory verification.</p></div>`}
+function prog(){const groups=[...new Set(TASKS.map(t=>t[0]))];
+ return `<div class="card row" style="gap:20px"><div class="ring" style="background:conic-gradient(var(--brand) 360deg,var(--line) 0)"><div>100%</div></div>
+ <div style="flex:1;min-width:220px"><h2>Software prototype completion</h2><div class="mute">All ${TASKS.length} scoped software deliverables are implemented in this local release: dashboard, data generation, analysis, authenticated API, persistent storage, tests and documentation.</div>
+ <p class="mute">Implementation stack: HTML/CSS/JavaScript dashboard, Python/FastAPI API, SQLite persistence, pandas and scikit-learn evaluation. The live API uses simulated data by default.</p></div></div>
+ <div class="grid g2">${groups.map(g=>`<div class="card"><h2>${g}</h2>${TASKS.filter(t=>t[0]===g).map(t=>`<div class="task"><span>${t[1]}</span><span class="pill ok">Implemented</span></div>`).join("")}</div>`).join("")}</div>
+ <div class="card"><h2>Physical deployment and independent validation (not included in the 100% software score)</h2><p class="mute">These require physical equipment, reference standards, water samples and an approved test site. They are not claimed as completed.</p>${DEPLOYMENT_TASKS.map(t=>`<div class="task"><div><b>${t[0]}</b><div class="mute">${t[1]}</div></div><span class="pill info">External validation</span></div>`).join("")}</div>`}
+// ---------- optional live API mode (served from FastAPI at http://127.0.0.1:8000) ----------
+window.JALRAKSHAK_API_CONNECTED=false;
+async function loadApiSnapshot(){
+ const badge=$("source-status");
+ try{
+  const listResponse=await fetch("/api/v1/devices",{cache:"no-store"});
+  if(!listResponse.ok)throw new Error(`Device endpoint returned ${listResponse.status}`);
+  const devices=await listResponse.json();
+  const snapshots=await Promise.all(devices.map(d=>fetch(`/api/v1/dashboard?device_id=${encodeURIComponent(d.device_id)}&hours=168`,{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error(`Dashboard endpoint returned ${r.status}`);return r.json()})));
+  const oldId=DEVICES[S.dev]?.id;
+  const apiDevices=snapshots.map((snap,i)=>({id:snap.device.device_id,name:snap.device.name,place:snap.device.location,ph:7,turb:1,tds:500,temp:25,eff:0,fw:"API / simulated",stages:[72,55,22,58]}));
+  const apiData=snapshots.map(snap=>snap.readings.map(row=>{
+   const cv=v=>({ph:v.ph,turb:v.turbidity_ntu,tds:v.tds_mg_l,temp:v.temperature_c});
+   return {t:new Date(row.timestamp),raw:cv(row.raw),pur:cv(row.purified)};
+  }).filter(row=>row.raw.ph!==null||row.pur.ph!==null));
+  const apiAlerts=[];
+  snapshots.forEach((snap,i)=>snap.alerts.forEach(a=>apiAlerts.push({id:a.id,dev:i,k:({ph:"ph",turbidity_ntu:"turb",tds_mg_l:"tds"})[a.parameter]||"tds",time:new Date(a.created_at),start:new Date(a.created_at),peak:a.value,sev:a.severity,status:a.status,message:a.message})));
+  if(apiDevices.length){
+   DEVICES.splice(0,DEVICES.length,...apiDevices);
+   DATA.splice(0,DATA.length,...apiData);
+   ALERTS=apiAlerts.sort((a,b)=>b.time-a.time);
+   const chosen=DEVICES.findIndex(d=>d.id===oldId);S.dev=chosen>=0?chosen:0;
+   $("devsel").innerHTML=DEVICES.map((d,i)=>`<option value="${i}">${d.id} · ${d.name}</option>`).join("");
+  }
+  window.JALRAKSHAK_API_CONNECTED=true;
+  badge.textContent="API connected · stored simulated data";
+  badge.title="Connected to FastAPI and SQLite. All preloaded records are synthetic.";
+  render();
+ }catch(err){
+  window.JALRAKSHAK_API_CONNECTED=false;
+  if(badge){badge.textContent="Offline preview · embedded simulated data";badge.title="Start the FastAPI service to load persisted readings.";}
+  console.info("JalRakshak API not connected; using the embedded demo dataset.",err);
+ }
+}
+try{render()}catch(e){$("app").innerHTML='<div class="card"><h2>Something went wrong</h2><p class="mute">The dashboard could not load. Refresh the page; if it keeps happening, check the browser console.</p></div>';console.error(e)}
+loadApiSnapshot();
+</script>
+</body>
+</html>
